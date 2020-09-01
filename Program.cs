@@ -1,6 +1,7 @@
 ﻿using Eletiva.Simplex.Entities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Eletiva.Simplex
@@ -14,9 +15,9 @@ namespace Eletiva.Simplex
         /// BaseValue: Valores da coluna b, que estão na ultima coluna da tabela
         /// TotalValor: Função Objetivo
         /// </summary>
-        private static List<BaseVariableValue> _baseVariableValue;
-        private static List<VariableValue> _variableValues;
-        private static List<BaseValue> _baseValues;
+        private static List<BaseVariableValue> _baseVariableValue = new List<BaseVariableValue>();
+        private static List<VariableValue> _variableValues = new List<VariableValue>();
+        private static List<BaseValue> _baseValues = new List<BaseValue>();
         private static TotalValue _totalValue;
 
         static void Main(string[] args)
@@ -93,35 +94,75 @@ namespace Eletiva.Simplex
         /// </summary>
         private static void FetchTable()
         {
-            var base_01 = new Base("x3");
-            var base_02 = new Base("x4");
-            var base_03 = new Base("x5");
-            var variable_01 = new Variable("x1");
-            var variable_02 = new Variable("x2");
-            var variable_03 = new Variable("x3");
-            var variable_04 = new Variable("x4");
-            var variable_05 = new Variable("x5");
-            _baseVariableValue = new List<BaseVariableValue>
-            {
-                new BaseVariableValue(base_01, variable_01, 1), new BaseVariableValue(base_01, variable_02, 0), new BaseVariableValue(base_01, variable_03, 1), new BaseVariableValue(base_01, variable_04, 0), new BaseVariableValue(base_01, variable_05, 0),
-                new BaseVariableValue(base_02, variable_01, 0), new BaseVariableValue(base_02, variable_02, 2), new BaseVariableValue(base_02, variable_03, 0), new BaseVariableValue(base_02, variable_04, 1), new BaseVariableValue(base_02, variable_05, 0),
-                new BaseVariableValue(base_03, variable_01, 3), new BaseVariableValue(base_03, variable_02, 2), new BaseVariableValue(base_03, variable_03, 0), new BaseVariableValue(base_03, variable_04, 0), new BaseVariableValue(base_03, variable_05, 1)
-            };
-            _baseValues = new List<BaseValue>
-            {
-                new BaseValue(base_01, 4), new BaseValue(base_02, 12), new BaseValue(base_03, 18)
-            };
-            _variableValues = new List<VariableValue>
-            {
-                new VariableValue(variable_01, -3), new VariableValue(variable_02, -5), new VariableValue(variable_03, 0), new VariableValue(variable_04, 0), new VariableValue(variable_05, 0)
-            };
+            var textFile = File.ReadAllText("exemplo 01.txt");
+            var splited = textFile.Split("\r\n");
+            var splitedVariable = splited[0].Split(' ');
+            // Preenchendo os valores da ultima linha
+            FetchVariableValues(splitedVariable);
+            // Preenchendo os valores da ultima coluna
+            FetchBaseValues(splited);
+            // Preenchendo os valores Base X Variavel
+            FetchBaseVariableValues(splited);
+            // Completando o resto com 0 
+            FillRest();
+            // Criando a função objetiva
             _totalValue = new TotalValue(0);
+        }
+
+        private static void FillRest()
+        {
+            foreach (var baseValue in _baseValues)
+            {
+                var variableValue = new VariableValue(new Variable(baseValue.Base.Name, baseValue.Base.Index), 0);
+                _variableValues.Add(variableValue);
+                foreach (var baseValue2 in _baseValues)
+                {
+                    _baseVariableValue.Add(new BaseVariableValue(baseValue2.Base, variableValue.Variable, 0));
+                }
+            }
+        }
+
+        private static void FetchBaseVariableValues(string[] splited)
+        {
+            var skipedFirstLine = splited.Skip(1);
+            for (int i = 0; i < _baseValues.Count(); i++)
+            {
+                var baseValue = _baseValues[i];
+                var baseLine = skipedFirstLine.ElementAt(i);
+                for (int j = 0; j < _variableValues.Count(); j++)
+                {
+                    var variableValue = _variableValues[j];
+                    var value = int.Parse(baseLine.Split(' ').ElementAt(j));
+                    _baseVariableValue.Add(new BaseVariableValue(baseValue.Base, variableValue.Variable, value));
+                }
+            }
+        }
+
+        private static void FetchBaseValues(string[] splited)
+        {
+            var maxVariableCount = _variableValues.Max(v => v.Variable.Index) + 1;
+            for (int i = 0; i < splited.Count() - 1; i++)
+            {
+                var baseSplited = splited.Except(splited.Take(1)).ElementAt(i).Split(' ');
+                var value = int.Parse(baseSplited.Last());
+                _baseValues.Add(new BaseValue(new Base($"x{i + maxVariableCount}", i + maxVariableCount), value));
+            }
+        }
+
+        private static void FetchVariableValues(string[] splitedVariable)
+        {
+            _variableValues = splitedVariable.Select((variable, index) =>
+            {
+                var value = decimal.Parse(splitedVariable[index]);
+                return new VariableValue(new Variable($"x{index + 1}", index + 1), value * -1);
+            })
+            .ToList();
         }
 
         #endregion
 
         #region Iteration
-        
+
         /// <summary>
         /// Inicia a iteração e verifica se a linha Z tem algum valor menor que 0
         /// Se sim, sai da função pois foi finalizada
