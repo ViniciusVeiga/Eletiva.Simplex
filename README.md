@@ -1,2 +1,0 @@
-# Eletiva.Simplex
-Simplex

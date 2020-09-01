@@ -25,6 +25,7 @@ namespace Eletiva.Simplex
             PrintTable();
             Iteration();
             PrintResult();
+            Console.Read();
         }
 
         #region Print Result
