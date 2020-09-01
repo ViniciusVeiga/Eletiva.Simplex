@@ -22,10 +22,15 @@ namespace Eletiva.Simplex
 
         static void Main(string[] args)
         {
+            // Busca e monta tabela
             FetchTable();
+            // Mostrar tabela
             PrintTable();
+            // Começar iteração
             Iteration();
+            // Mostrar resultado
             PrintResult();
+            // Parar para ler
             Console.Read();
         }
 
@@ -103,7 +108,7 @@ namespace Eletiva.Simplex
             FetchBaseValues(splited);
             // Preenchendo os valores Base X Variavel
             FetchBaseVariableValues(splited);
-            // Completando o resto com 0 
+            // Completando o resto
             FillRest();
             // Criando a função objetiva
             _totalValue = new TotalValue(0);
@@ -117,7 +122,11 @@ namespace Eletiva.Simplex
                 _variableValues.Add(variableValue);
                 foreach (var baseValue2 in _baseValues)
                 {
-                    _baseVariableValue.Add(new BaseVariableValue(baseValue2.Base, variableValue.Variable, 0));
+                    // Quando a variavel tiver o mesmo nome que a base, valor igual a 1
+                    if (variableValue.Variable.Name.Equals(baseValue2.Base.Name))
+                        _baseVariableValue.Add(new BaseVariableValue(baseValue2.Base, variableValue.Variable, 1));
+                    else
+                        _baseVariableValue.Add(new BaseVariableValue(baseValue2.Base, variableValue.Variable, 0));
                 }
             }
         }
