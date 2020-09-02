@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eletiva.Simplex", "Eletiva.Simplex.csproj", "{73A8947C-D366-4814-87F4-DE58B75919B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eletiva.Simplex", "Eletiva.Simplex.csproj", "{73A8947C-D366-4814-87F4-DE58B75919B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eletive.Simplex.Tests", "..\Eletive.Simplex.Tests\Eletive.Simplex.Tests.csproj", "{F603D307-2349-4457-AD27-EDE864960348}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{73A8947C-D366-4814-87F4-DE58B75919B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73A8947C-D366-4814-87F4-DE58B75919B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73A8947C-D366-4814-87F4-DE58B75919B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F603D307-2349-4457-AD27-EDE864960348}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F603D307-2349-4457-AD27-EDE864960348}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F603D307-2349-4457-AD27-EDE864960348}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F603D307-2349-4457-AD27-EDE864960348}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
