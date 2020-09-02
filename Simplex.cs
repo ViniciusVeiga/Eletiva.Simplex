@@ -225,6 +225,7 @@ namespace Eletiva.Simplex
 
         private void CaculateBaseVariableValuesAndBaseValues(List<BaseVariableValue> baseLine, BaseVariableValue center, BaseVariableValue centerValue, Base @base)
         {
+            // Descobre o valor para multiplicar e faz outra linha menos esse valor, Passo 6 (Faz para valores Base X Variavel e Coluna b)
             var value = center.Value / centerValue.Value;
             baseLine.ForEach(bv =>
             {
@@ -239,7 +240,8 @@ namespace Eletiva.Simplex
         }
 
         private void CalculateVariableValuesAndTotalValue(Variable variable, List<BaseVariableValue> baseLine, BaseVariableValue centerValue)
-        {
+        {           
+            // Descobre o valor para multiplicar e faz outra linha menos esse valor, Passo 6 (Faz para Linha Z e Valor Total)
             var variableValue = _variableValues.Where(v => variable.Id.Equals(v.Variable.Id)).First();
             var value = variableValue.Value / centerValue.Value;
             baseLine.ForEach(bv =>
@@ -258,6 +260,7 @@ namespace Eletiva.Simplex
 
         private Base GetBaseThatComeOut(Variable variable)
         {
+            // Pega a base que vai sair dividindo o Valor pelo Base X Variavel central e pegando a base que tem menor valor na Coluna b
             var lowerRatio = _baseValues.Select(baseValue =>
             {
                 var baseVariableValue = GetBaseVariableValue(baseValue.Base, variable);
@@ -271,6 +274,7 @@ namespace Eletiva.Simplex
 
         private Variable GetVariableThatWillEnter()
         {
+            // Pega a variavel que tem menor valor na linha Z
             var minVariableValue = _variableValues.Min(variableValue => variableValue.Value);
             var variable = _variableValues.Where(variableValue => minVariableValue.Equals(variableValue.Value)).First().Variable;
             return variable;
